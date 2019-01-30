@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ApiGTT.Models;
+using ApiGTT.Helpers;
 
 namespace ApiGTT.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UsersContext _context;
+        private readonly AppDBContext _context;
 
-        public UsersController(UsersContext context)
+        public UsersController(AppDBContext context)
         {
             this._context = context;
             if(this._context.Users.Count()==0)
@@ -21,9 +23,11 @@ namespace ApiGTT.Controllers
                     Console.WriteLine("No existe usuarios");
                     Users usuario = new Users();
                     usuario.username="Xavi";
-                    usuario.password="pass";
+                    usuario.password=Encrypt.Hash("pass");
+                    Console.WriteLine("1º->"+ Encrypt.Hash("pass"));
                     this._context.Users.Add(usuario);
                     this._context.SaveChanges();
+                    Console.WriteLine("2º->"+ Encrypt.Hash("pass"));
             }
         }
 

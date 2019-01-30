@@ -8,9 +8,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ApiGTT.Migrations
 {
-    [DbContext(typeof(UsersContext))]
-    [Migration("20190124122139_initial")]
-    partial class initial
+    [DbContext(typeof(AppDBContext))]
+    [Migration("20190125112915_certificates")]
+    partial class certificates
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,6 +19,34 @@ namespace ApiGTT.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("ApiGTT.Models.Certificates", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("name");
+
+                    b.Property<string>("type");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Certificates");
+                });
+
+            modelBuilder.Entity("ApiGTT.Models.Jira", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("password");
+
+                    b.Property<string>("username");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Jira");
+                });
 
             modelBuilder.Entity("ApiGTT.Models.Users", b =>
                 {
