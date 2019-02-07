@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Threading.Tasks;
+
 using ApiGTT.Models;
 using ApiGTT.Helpers;
 
@@ -54,8 +54,8 @@ namespace ApiGTT.Controllers
                 user=>user.username==value.username).First();
              if(UserResult.password == Encrypt.Hash(value.password)){
                 Console.WriteLine("Login");
-                String token = BuildToken(UserResult);
-                return Ok(new {token= token});
+                JwtSecurityToken token = BuildToken(UserResult);
+                return Ok(new {token= new JwtSecurityTokenHandler().WriteToken(token)});
              }else{
                  return Unauthorized();
              }
@@ -79,23 +79,22 @@ namespace ApiGTT.Controllers
         {
         }
 
-        public String BuildToken(Users data)
+        public JwtSecurityToken BuildToken(Users data)
         {
-            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-    	    var now = DateTime.UtcNow;
-            var tokenDescriptor = new SecurityTokenDescriptor
-		    {
-			    Subject = new ClaimsIdentity(new[]
-			    {
-				    new Claim( "UserID", data.id.ToString() ),
-				    new Claim( "UserName", data.username ),
-				 }),
-			    Expires = now.AddDays(1),
-			    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecret")), SecurityAlgorithms.HmacSha256),
-		    };		
-		    var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-			return tokenString;
+          var claims = new[]{
+              new Claim(ClaimTypes.Name, data.username),
+              new Claim("id", data.id.ToString())
+          };
+          var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("123456 secretsecretsecret"));
+          var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+        
+            var token = new JwtSecurityToken(
+                issuer:"geekshubs.com",
+                audience: "geekshubs.com",
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            return token ;
 	    }
 
     }
