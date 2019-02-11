@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApiGTT.Controllers
 {
@@ -17,7 +18,10 @@ namespace ApiGTT.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return Ok("value2");
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst("id")?.Value;
+            var name = claimsIdentity.FindFirst(ClaimTypes.Name);
+            return Ok(userId + ' '+ name);
         }
 
         // GET api/values/5
