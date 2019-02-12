@@ -1,13 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-
+using System.Data;
 namespace ApiGTT.Models{
 
-    public class AppDBContext: DbContext{
-        public AppDBContext(DbContextOptions<AppDBContext> options) : 
+    public class AppBDContext: DbContext{
+        
+       public AppBDContext(DbContextOptions<AppBDContext> options) : 
         base(options){
-        }
-        public AppDBContext(){
-
         }
 
          public DbSet<Jira> Jira{get; set;}
